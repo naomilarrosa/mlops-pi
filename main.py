@@ -55,9 +55,8 @@ def earlyacces(Año: str):
     mask = (df['release_date'].str.startswith(Año, na=False)) & (df["early_access"] == True)
     df_year = df[mask]
     
-    # Contar la cantidad de juegos con early access en el año especificado
-    cantidad_early_access = df_year['early_access'].sum()
-    return cantidad_early_access
+    games = len(df_year)
+    return {"games": games}
 
 # Función para obtener el análisis de sentimiento por año
 @app.get('/sentiment/')
