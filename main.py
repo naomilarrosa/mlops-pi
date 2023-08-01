@@ -75,13 +75,16 @@ def metascore(Año: str):
     return top_metascore_juegos
 
 
-from flask import Flask, request, jsonify
+from fastapi import FastAPI
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import LabelEncoder
 from sklearn.impute import SimpleImputer
 import ast
+from pydantic import BaseModel
+
+app = FastAPI()
 
 # Cargar el DataFrame
 rows = []
@@ -90,7 +93,7 @@ with open("steam_games.json") as f:
         rows.append(ast.literal_eval(line))
 
 df = pd.DataFrame(rows)
-
+# (Código para cargar y procesar el DataFrame)
 # Convertir la columna "release_date" a formato de fecha y extraer el año
 df['release_date'] = pd.to_datetime(df['release_date'], errors='coerce')
 df['year'] = df['release_date'].dt.year
@@ -116,7 +119,23 @@ df.dropna(subset=['genres_encoded', 'year', 'metascore'], inplace=True)
 
 # Eliminar filas que contienen NaN en la columna 'price'
 df.dropna(subset=['price'], inplace=True)
+# Definir la clase de datos de entrada esperados en la solicitud POST
+class InputData(BaseModel):
+    genres: str
+    year: int
+    metascore: float
 
+# Ruta para realizar predicciones
+@app.post('/predict/')
+def predict_price(data: InputData):
+    # Preparar los datos para la predicción
+    genres_encoded = label_encoder.transform([data.genres])
+    year = data.year
+    metascore = data.metascore
+# Devolver el resultado de la predicción
+    result = {'predicted_price': predict_price[0]}
+    return result
+    # (Resto del código para la predicción)
 # Seleccionar las características para el modelo
 X = df[['genres_encoded', 'year', 'metascore']]
 y = df['price']  # Variable objetivo que deseamos predecir (precio)
@@ -131,36 +150,9 @@ X_train, X_test, y_train, y_test = train_test_split(X_imputed, y, test_size=0.2,
 # Entrenar el modelo de regresión
 model = LinearRegression()
 model.fit(X_train, y_train)
-
-
-app = Flask(__name__)
-
-# Ruta para realizar predicciones
-@app.route('/predict', methods=['POST'])
-def predict_price():
-    data = request.json
-
-    # Preparar los datos para la predicción
-    genres_encoded = label_encoder.transform([data['genres']])
-    year = data['year']
-    metascore = data['metascore']
-
-    # Crear un DataFrame con los datos de entrada
-    input_data = pd.DataFrame({
-        'genres_encoded': genres_encoded,
-        'year': year,
-        'metascore': metascore
-    })
-
-    # Rellenar los valores faltantes en los datos de entrada usando el imputador
-    input_data_imputed = imputer.transform(input_data)
-
-    # Realizar la predicción usando el modelo entrenado
-    predicted_price = model.predict(input_data_imputed)
-
-    # Devolver el resultado de la predicción
-    result = {'predicted_price': predicted_price[0]}
-    return jsonify(result)
+# Realizar predicciones en el conjunto de prueba
+y_pred = model.predict(X_test)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    import uvicorn
+    uvicorn.run(app, host='0.0.0.0', port=8000)
