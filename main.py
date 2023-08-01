@@ -77,6 +77,7 @@ def metascore(Año: str):
 
 from flask import Flask, request, jsonify
 import pandas as pd
+from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import LabelEncoder
 from sklearn.impute import SimpleImputer
