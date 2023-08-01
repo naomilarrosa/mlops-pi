@@ -73,3 +73,93 @@ def metascore(Año: str):
     # Obtener los top 5 juegos con mayor metascore en el año especificado
     top_metascore_juegos = df_year.nlargest(5, 'metascore')['app_name'].tolist()
     return top_metascore_juegos
+
+
+from flask import Flask, request, jsonify
+import pandas as pd
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import LabelEncoder
+from sklearn.impute import SimpleImputer
+import ast
+
+# Cargar el DataFrame
+rows = []
+with open("steam_games.json") as f:
+    for line in f.readlines():
+        rows.append(ast.literal_eval(line))
+
+df = pd.DataFrame(rows)
+
+# Convertir la columna "release_date" a formato de fecha y extraer el año
+df['release_date'] = pd.to_datetime(df['release_date'], errors='coerce')
+df['year'] = df['release_date'].dt.year
+
+# Codificar la variable categórica "genre"
+label_encoder = LabelEncoder()
+df = df.dropna(subset=['genres'])  # Eliminar filas con valores 'float' en la columna 'genres'
+df['genres'] = df['genres'].apply(lambda x: ', '.join(x))  # Convertir listas a cadenas
+df['genres_encoded'] = label_encoder.fit_transform(df['genres'])
+df.drop('genres', axis=1, inplace=True)
+
+# Convertir la columna 'metascore' a valores numéricos y reemplazar los valores 'nan' y 'na' por NaN
+df['metascore'] = pd.to_numeric(df['metascore'], errors='coerce')
+
+# Tratar los valores 'Free to Play' en la columna 'price' como 0
+df.loc[df['price'] == 'Free to Play', 'price'] = 0
+
+# Convertir la columna 'price' a valores numéricos y reemplazar los valores 'nan' por NaN
+df['price'] = pd.to_numeric(df['price'], errors='coerce')
+
+# Eliminar filas que contienen NaN en cualquier columna excepto 'price'
+df.dropna(subset=['genres_encoded', 'year', 'metascore'], inplace=True)
+
+# Eliminar filas que contienen NaN en la columna 'price'
+df.dropna(subset=['price'], inplace=True)
+
+# Seleccionar las características para el modelo
+X = df[['genres_encoded', 'year', 'metascore']]
+y = df['price']  # Variable objetivo que deseamos predecir (precio)
+
+# Aplicar SimpleImputer para reemplazar los valores NaN en las características restantes
+imputer = SimpleImputer(strategy='mean')
+X_imputed = imputer.fit_transform(X)
+
+# Dividir los datos en conjunto de entrenamiento y prueba
+X_train, X_test, y_train, y_test = train_test_split(X_imputed, y, test_size=0.2, random_state=42)
+
+# Entrenar el modelo de regresión
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+
+app = Flask(__name__)
+
+# Ruta para realizar predicciones
+@app.route('/predict', methods=['POST'])
+def predict_price():
+    data = request.json
+
+    # Preparar los datos para la predicción
+    genres_encoded = label_encoder.transform([data['genres']])
+    year = data['year']
+    metascore = data['metascore']
+
+    # Crear un DataFrame con los datos de entrada
+    input_data = pd.DataFrame({
+        'genres_encoded': genres_encoded,
+        'year': year,
+        'metascore': metascore
+    })
+
+    # Rellenar los valores faltantes en los datos de entrada usando el imputador
+    input_data_imputed = imputer.transform(input_data)
+
+    # Realizar la predicción usando el modelo entrenado
+    predicted_price = model.predict(input_data_imputed)
+
+    # Devolver el resultado de la predicción
+    result = {'predicted_price': predicted_price[0]}
+    return jsonify(result)
+
+if __name__ == '__main__':
+    app.run(debug=True)
