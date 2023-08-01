@@ -49,17 +49,14 @@ import pandas as pd  # Asegúrate de importar pandas si aún no lo has hecho
 
 # Suponiendo que el DataFrame "df" está definido globalmente o se pasa como un parámetro a la función
 
-@app.get('/earlyaccess/')
-def earlyaccess(Año: str):
-    # Asegúrate de que la columna "release_date" sea de tipo datetime
-    df['release_date'] = pd.to_datetime(df['release_date'])
-    
+@app.get('/earlyacces/')
+def earlyacces(Año: str):
     # Filtrar el DataFrame para el año especificado
-    df_year = df[df['release_date'].dt.year == int(Año)]
+    df_year = df[df['release_date'].str.startswith(Año)]
     
     # Contar la cantidad de juegos con early access en el año especificado
     cantidad_early_access = df_year['early_access'].sum()
-    return cantidad_early_access
+    return cantidad_early_accesss
 
 # Función para obtener el análisis de sentimiento por año
 @app.get('/sentiment/')
