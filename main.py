@@ -45,14 +45,22 @@ def specs(Año: str):
     top_specs = df_year['specs'].explode().value_counts().head(5).index.tolist()
     return top_specs
 # Función para obtener la cantidad de juegos lanzados en un año con early access
-@app.get('/earlyacces/')
-def earlyacces(Año: str):
+import pandas as pd  # Asegúrate de importar pandas si aún no lo has hecho
+
+# Suponiendo que el DataFrame "df" está definido globalmente o se pasa como un parámetro a la función
+
+@app.get('/earlyaccess/')
+def earlyaccess(Año: str):
+    # Asegúrate de que la columna "release_date" sea de tipo datetime
+    df['release_date'] = pd.to_datetime(df['release_date'])
+    
     # Filtrar el DataFrame para el año especificado
-    df_year = df[df['release_date'].str.startswith(Año)]
+    df_year = df[df['release_date'].dt.year == int(Año)]
     
     # Contar la cantidad de juegos con early access en el año especificado
     cantidad_early_access = df_year['early_access'].sum()
     return cantidad_early_access
+
 # Función para obtener el análisis de sentimiento por año
 @app.get('/sentiment/')
 def sentiment(Año: str):
