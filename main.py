@@ -99,7 +99,7 @@ def prediccion_precio(year: int, metascore: float, genero: str):
     # Crear un DataFrame con los datos de entrada
     data = {
         "year": [year],
-        "metascore": [metascore]
+        "metascore": [metascore],
         genero: [1]  # Establecer a 1 el género seleccionado
     }
     for genero_disponible in generos_disponibles:
