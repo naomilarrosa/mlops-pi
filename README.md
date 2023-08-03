@@ -44,7 +44,7 @@ Además de un video explicativo acerca de esta :
 + model.pkl: Archivo en el cual guarde el modelo entrenado para luego cargarlo y usarlo en main.py .
 + steam_games.json: dataset con el cual realicé el modelo.
 
-
+Por ultimo el preceso de ETL esta con código comentado en modelo.ipynb
 
 
 ##### Nota :Para acceder a todos los datasets utilizados se puede ingresar al siguiente enlace de drive : 
