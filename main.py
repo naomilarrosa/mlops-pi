@@ -90,19 +90,19 @@ def prediccion_precio(year: int, metascore: float, genero: str):
     data = {
         "year": [year],
         "metascore": [metascore],
-        "Action": [0]
-        "Adventure": [0]
-        "Casual": [0]
-        "Early Access": [0]
-        "Free to Play": [0]
-        "Indie": [0]
-        "Massively Multiplayer": [0]
-        "RPG": [0]
-        "Racing": [0]
-        "Simulation": [0]
-        "Sports": [0]
-        "Strategy": [0]
-        "Video Production": [0]
+        "Action": [0],
+        "Adventure": [0],
+        "Casual": [0],
+        "Early Access": [0],
+        "Free to Play": [0],
+        "Indie": [0],
+        "Massively Multiplayer": [0],
+        "RPG": [0],
+        "Racing": [0],
+        "Simulation": [0],
+        "Sports": [0],
+        "Strategy": [0],
+        "Video Production": [0],
     }
     df = pd.DataFrame(data)
     df[genero] = 1
