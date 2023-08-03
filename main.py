@@ -79,4 +79,22 @@ def metascore(Año: str):
     top_metascore_juegos = df_year.nlargest(5, 'metascore')['app_name'].tolist()
     return top_metascore_juegos
 
+from typing import List
+import pickle
+import numpy as np
 
+def load_model():
+    with open('bagging_model.pkl', 'rb') as file:
+        model = pickle.load(file)
+    return model
+
+def make_prediction(input_data):
+    model = load_model()
+    predictions = model.predict(input_data)
+    return predictions
+
+@app.post("/predict/")
+async def predict_price(genres: List[str], early_access: bool):
+    input_data = np.array([[genres, early_access]])
+    predictions = make_prediction(input_data)
+    return {"predictions": predictions.tolist()}
