@@ -78,33 +78,49 @@ def metascore(Año: str):
     # Obtener los top 5 juegos con mayor metascore en el año especificado
     top_metascore_juegos = df_year.nlargest(5, 'metascore')['app_name'].tolist()
     return top_metascore_juegos
+# Importar las librerías necesarias
 import pickle
 import pandas as pd
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-# Cargar el modelo entrenado desde el archivo pickle
+# Cargar el modelo pickle
 with open("model.pkl", "rb") as f:
     model = pickle.load(f)
 
-# Definir los géneros disponibles en el conjunto de datos
-generos_disponibles = ["Action", "Adventure", "Casual", "Early Access", "Free to Play", "Indie", "Massively Multiplayer", "RPG", "Racing", "Simulation", "Sports", "Strategy", "Video Production"]
-
-# Definir el modelo de datos para la entrada
-class InputData(BaseModel):
-    year: int
+# Definir el esquema de entrada
+class Input(BaseModel):
     metascore: float
-    genero: str
+    year: float
+    Action: int
+    Adventure: int
+    Casual: int
+    Early_Access: int
+    Free_to_Play: int
+    Indie: int
+    Massively_Multiplayer: int
+    RPG: int
+    Racing: int
+    Simulation: int
+    Sports: int
+    Strategy: int
+    Video_Production: int
 
-@app.post("/prediccion_precio/")
-def prediccion_precio(data: InputData):
-    # Verificar si el género es válido
-    if data.genero not in generos_disponibles:
-        return {"error": "Género inválido"}
+# Definir el esquema de salida
+class Output(BaseModel):
+    price: float
 
-    # Realizar la predicción del precio utilizando el modelo cargado
-    genero_index = generos_disponibles.index(data.genero)
-    precio_predicho = model.predict([[data.year, data.metascore, genero_index]])
+# Definir la ruta de predicción
+@app.post("/predict", response_model=Output)
+def predict(input: Input):
+    # Convertir el input en un DataFrame
+    input_df = pd.DataFrame([input.dict()])
+    
+    # Realizar la predicción con el modelo
+    try:
+        price = model.predict(input_df)[0]
+    except:
+        raise HTTPException(status_code=400, detail="Invalid input")
 
-    # Devolver la predicción del precio como resultado de la API
-    return {"precio_predicho": precio_predicho[0]}
+    # Devolver el precio como salida
+    return Output(price=price)
