@@ -82,8 +82,6 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import pickle
 
-app = FastAPI()
-
 class Item(BaseModel):
     early_access: int
     Adventure: float
