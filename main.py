@@ -92,28 +92,28 @@ generos_disponibles = ["Action", "Adventure", "Casual", "Early Access", "Free to
 
 @app.post("/prediccion_precio/")
 def prediccion_precio(year: int, metascore: float, genero: str):
-    # Validar que el género ingresado esté en los géneros disponibles
-    if genero not in generos_disponibles:
-        return {"error": "Género no válido"}
-
     # Crear un DataFrame con los datos de entrada
     data = {
         "year": [year],
-        "metascore": [metascore],
-        genero: [1]  # Establecer a 1 el género seleccionado
+        "metascore": [metascore]
     }
-    for genero_disponible in generos_disponibles:
-        if genero_disponible == genero:
-            data[genero_disponible] = [1]  # Establecer a 1 el género seleccionado
-        else:
-            data[genero_disponible] = [0]  # Establecer a 0 los otros géneros
 
+    # Crear un DataFrame con los datos de entrada
     df = pd.DataFrame(data)
+
+    # Transformación del año
+    df["year"] = pd.to_datetime(df["year"]).dt.year
+
+    # Inicializar todas las columnas de géneros en 0
+    for genero_disponible in generos_disponibles:
+        df[genero_disponible] = 0
+
+    # Establecer a 1 el género seleccionado
+    if genero in generos_disponibles:
+        df[genero] = 1
 
     # Realizar la predicción del precio utilizando el modelo cargado
     precio_predicho = model.predict(df)
 
     # Devolver la predicción del precio como resultado de la API
     return {"precio_predicho": precio_predicho[0]}
-
-
