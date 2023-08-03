@@ -1,7 +1,7 @@
 # Bibliotecas necesarias y creación de la aplicación FastAPI:
 from fastapi import FastAPI
 
-app = FastAPI()
+app = FastAPI(title="Proyecto MLOps By Naomi")
 # Creamos el DataFrame
 import ast
 import pandas as pd
