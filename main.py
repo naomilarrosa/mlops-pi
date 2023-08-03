@@ -83,7 +83,7 @@ from fastapi import FastAPI, HTTPException
 import numpy as np
 
 # Cargar el modelo desde el archivo pickle
-with open('model.pickle', 'rb') as archivo_pickle:
+with open('model.pkl', 'rb') as archivo_pickle:
     modelo = pickle.load(archivo_pickle)
 
 @app.post('/predecir/')
