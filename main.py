@@ -82,16 +82,15 @@ def metascore(Año: str):
 
 import pandas as pd
 import pickle
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import BaggingRegressor
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.templating import Jinja2Templates
+from pydantic import BaseModel, conint
 
 # Cargar el modelo entrenado
 with open("model.pkl", "rb") as file:
     model = pickle.load(file)
-from pydantic import BaseModel, conint
 
+# Definir la estructura de datos que se enviará a la API
 class InputData(BaseModel):
     early_access: conint(ge=0, le=1)
     Action: conint(ge=0, le=1)
@@ -102,9 +101,19 @@ class InputData(BaseModel):
     Sports: conint(ge=0, le=1)
     Philisophical: conint(ge=0, le=1)
 
-    # Ruta para hacer la predicción
+
+
+# Cargar las plantillas HTML
+templates = Jinja2Templates(directory="templates")
+
+# Ruta para mostrar el formulario de predicción
+@app.get("/predict/")
+async def show_prediction_form(request: Request):
+    return templates.TemplateResponse("predict_form.html", {"request": request})
+
+# Ruta para hacer la predicción
 @app.post("/predict/")
-def predict_price(input_data: InputData):
+async def predict_price(input_data: InputData):
     # Crear un DataFrame con los datos de entrada
     data = {
         "early_access": [input_data.early_access],
@@ -122,4 +131,4 @@ def predict_price(input_data: InputData):
     prediction = model.predict(input_df)
 
     # Devolver la predicción como resultado de la API
-    return {"predicted_price": prediction[0]} 
+    return {"predicted_price": prediction[0]}
