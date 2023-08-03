@@ -89,31 +89,14 @@ with open("model.pkl", "rb") as f:
 # Definir los géneros disponibles en el conjunto de datos
 generos_disponibles = ["Action", "Adventure", "Casual", "Early Access", "Free to Play", "Indie", "Massively Multiplayer", "RPG", "Racing", "Simulation", "Sports", "Strategy", "Video Production"]
 
-
 @app.post("/prediccion_precio/")
 def prediccion_precio(year: int, metascore: float, genero: str):
-    # Crear un DataFrame con los datos de entrada
-    data = {
-        "year": [year],
-        "metascore": [metascore]
-    }
-
-    # Crear un DataFrame con los datos de entrada
-    df = pd.DataFrame(data)
-
-    # Transformación del año
-    df["year"] = pd.to_datetime(df["year"]).dt.year
-
-    # Inicializar todas las columnas de géneros en 0
-    for genero_disponible in generos_disponibles:
-        df[genero_disponible] = 0
-
-    # Establecer a 1 el género seleccionado
-    if genero in generos_disponibles:
-        df[genero] = 1
+    # Verificar si el género es válido
+    if genero not in generos_disponibles:
+        return {"error": "Género inválido"}
 
     # Realizar la predicción del precio utilizando el modelo cargado
-    precio_predicho = model.predict(df)
+    precio_predicho = model.predict([[year, metascore, generos_disponibles.index(genero)]])
 
     # Devolver la predicción del precio como resultado de la API
     return {"precio_predicho": precio_predicho[0]}
