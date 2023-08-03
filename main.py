@@ -80,12 +80,14 @@ def metascore(Año: str):
     return top_metascore_juegos
 import pickle
 
+
 # Cargar el modelo entrenado desde el archivo pickle
 with open("model.pkl", "rb") as f:
     model = pickle.load(f)
 
 # Definir los géneros disponibles en el conjunto de datos
 generos_disponibles = ["Action", "Adventure", "Casual", "Early Access", "Free to Play", "Indie", "Massively Multiplayer", "RPG", "Racing", "Simulation", "Sports", "Strategy", "Video Production"]
+
 
 @app.post("/prediccion_precio/")
 def prediccion_precio(year: int, metascore: float, genero: str):
@@ -101,6 +103,10 @@ def prediccion_precio(year: int, metascore: float, genero: str):
             data[genero_disponible] = [0]  # Establecer a 0 los otros géneros
 
     df = pd.DataFrame(data)
+
+    # Realizar la predicción del precio utilizando el modelo cargado
     precio_predicho = model.predict(df)
-    # Devolver la predicción del precio como resultado de la API
+
+    # Devolver la predicción del precio y el RMSE como resultado de la API
     return {"precio_predicho": precio_predicho[0], "RMSE": 8.36414991271523}
+
