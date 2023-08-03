@@ -80,7 +80,6 @@ def metascore(Año: str):
     return top_metascore_juegos
 # Importar las librerías necesarias
 import pickle
-import pandas as pd
 from fastapi import FastAPI, HTTPException, Request, Form
 from pydantic import BaseModel
 
@@ -97,9 +96,6 @@ class Input(BaseModel):
 # Definir el esquema de salida
 class Output(BaseModel):
     price: float
-
-# Crear la aplicación FastAPI
-app = FastAPI()
 
 # Definir la ruta de predicción usando datos del formulario
 @app.post("/predict", response_model=Output)
