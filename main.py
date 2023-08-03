@@ -82,6 +82,8 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import pickle
 
+app = FastAPI()
+
 class Item(BaseModel):
     early_access: int
     Adventure: float
@@ -111,13 +113,9 @@ def load_model_from_pickle():
         modelo_entrenado = pickle.load(file)
     return modelo_entrenado
 
-def predict_price(early_access, Adventure, Action, Indie):
-    # Aquí va el código para realizar la predicción utilizando el modelo cargado
-    # Supongamos que tu modelo es un modelo de regresión
+def predict_price(input_data):
+    # Cargar el modelo desde el archivo pickle
     model = load_model_from_pickle()
-
-    # Preparar los datos para la predicción
-    input_data = [[early_access, Adventure, Action, Indie, Casual, Simulation, Strategy, RPG, Sports, Racing, Massively_Multiplayer, Animation_Modeling, Video_Production, Utilities, Web_Publishing, Education, Software_Training, Design_Illustration, Audio_Production, Photo_Editing, Accounting]]
 
     # Realizar la predicción
     prediction = model.predict(input_data)
@@ -130,8 +128,8 @@ def predict_price(early_access, Adventure, Action, Indie):
 @app.post("/predict_price/")
 async def get_prediction(item: Item):
     try:
-        model = load_model_from_pickle()
-        prediction = predict_price(item.early_access, item.Adventure, item.Action, item.Indie, item.Casual, item.Simulation, item.Strategy, item.RPG, item.Sports, item.Racing, item.Massively_Multiplayer, item.Animation_Modeling, item.Video_Production, item.Utilities, item.Web_Publishing, item.Education, item.Software_Training, item.Design_Illustration, item.Audio_Production, item.Photo_Editing, item.Accounting)
+        input_data = [list(item.dict().values())]
+        prediction = predict_price(input_data)
         return {"prediction": prediction}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
