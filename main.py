@@ -83,28 +83,33 @@ import pickle
 import pandas as pd
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from enum import Enum
 
 # Cargar el modelo pickle
 with open("model.pkl", "rb") as f:
     model = pickle.load(f)
 
-# Definir el esquema de entrada
+# Crear el Enum de géneros
+class Genre(Enum):
+    Action = "Action"
+    Adventure = "Adventure"
+    Casual = "Casual"
+    Early_Access = "Early Access"
+    Free_to_Play = "Free to Play"
+    Indie = "Indie"
+    Massively_Multiplayer = "Massively Multiplayer"
+    RPG = "RPG"
+    Racing = "Racing"
+    Simulation = "Simulation"
+    Sports = "Sports"
+    Strategy = "Strategy"
+    Video_Production = "Video Production"
+
+# Definir el esquema de entrada con tres parámetros
 class Input(BaseModel):
     metascore: float
     year: float
-    Action: int
-    Adventure: int
-    Casual: int
-    Early_Access: int
-    Free_to_Play: int
-    Indie: int
-    Massively_Multiplayer: int
-    RPG: int
-    Racing: int
-    Simulation: int
-    Sports: int
-    Strategy: int
-    Video_Production: int
+    genre: Genre
 
 # Definir el esquema de salida
 class Output(BaseModel):
@@ -113,8 +118,8 @@ class Output(BaseModel):
 # Definir la ruta de predicción
 @app.post("/predict", response_model=Output)
 def predict(input: Input):
-    # Convertir el input en un DataFrame
-    input_df = pd.DataFrame([input.dict()])
+    # Convertir el input en un DataFrame con las columnas necesarias para el modelo
+    input_df = pd.DataFrame([[input.metascore, input.year, *[1 if input.genre.value == g else 0 for g in Genre._member_names_]]], columns=['metascore', 'year', *Genre._member_names_])
     
     # Realizar la predicción con el modelo
     try:
@@ -124,3 +129,4 @@ def predict(input: Input):
 
     # Devolver el precio como salida
     return Output(price=price)
+
