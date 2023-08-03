@@ -89,14 +89,21 @@ with open("model.pkl", "rb") as f:
 # Definir los géneros disponibles en el conjunto de datos
 generos_disponibles = ["Action", "Adventure", "Casual", "Early Access", "Free to Play", "Indie", "Massively Multiplayer", "RPG", "Racing", "Simulation", "Sports", "Strategy", "Video Production"]
 
+# Definir el modelo de datos para la entrada
+class InputData(BaseModel):
+    year: int
+    metascore: float
+    genero: str
+
 @app.post("/prediccion_precio/")
-def prediccion_precio(year: int, metascore: float, genero: str):
+def prediccion_precio(data: InputData):
     # Verificar si el género es válido
-    if genero not in generos_disponibles:
+    if data.genero not in generos_disponibles:
         return {"error": "Género inválido"}
 
     # Realizar la predicción del precio utilizando el modelo cargado
-    precio_predicho = model.predict([[year, metascore, generos_disponibles.index(genero)]])
+    genero_index = generos_disponibles.index(data.genero)
+    precio_predicho = model.predict([[data.year, data.metascore, genero_index]])
 
     # Devolver la predicción del precio como resultado de la API
     return {"precio_predicho": precio_predicho[0]}
