@@ -79,24 +79,36 @@ def metascore(Año: str):
     top_metascore_juegos = df_year.nlargest(5, 'metascore')['app_name'].tolist()
     return top_metascore_juegos
 import pickle
-from fastapi import FastAPI, HTTPException
-import numpy as np
 
-# Cargar el modelo desde el archivo pickle
-with open('model.pkl', 'rb') as archivo_pickle:
-    modelo = pickle.load(archivo_pickle)
+# Cargar el modelo entrenado desde el archivo pickle
+with open("model.pkl", "rb") as f:
+    model = pickle.load(f)
 
-@app.post('/predecir/')
-def predecir_precio(early_access: int, Action: int, Casual: int, Indie: int, Simulation: int, Strategy: int, RPG: int, Sports: int, Adventure: int, Racing: int, Massively_Multiplayer: int, Animation_Modeling: int, Video_Production: int, Utilities: int, Web_Publishing: int, Education: int, Software_Training: int, Design_Illustration: int, Audio_Production: int, Photo_Editing: int, Accounting: int):
-    # Convertir los parámetros en una lista de características
-    features = [early_access, Action, Casual, Indie, Simulation, Strategy, RPG, Sports, Adventure, Racing, Massively_Multiplayer, Animation_Modeling, Video_Production, Utilities, Web_Publishing, Education, Software_Training, Design_Illustration, Audio_Production, Photo_Editing, Accounting]
+@app.post("/prediccion_precio/")
+def prediccion_precio(year: int, metascore: float, genero: str):
+    # Crear un DataFrame con los datos de entrada
+    data = {
+        "year": [year],
+        "metascore": [metascore],
+        "Action": [0]
+        "Adventure": [0]
+        "Casual": [0]
+        "Early Access": [0]
+        "Free to Play": [0]
+        "Indie": [0]
+        "Massively Multiplayer": [0]
+        "RPG": [0]
+        "Racing": [0]
+        "Simulation": [0]
+        "Sports": [0]
+        "Strategy": [0]
+        "Video Production": [0]
+    }
+    df = pd.DataFrame(data)
+    df[genero] = 1
 
-    # Realizar la predicción con el modelo
-    predicciones = modelo.predict([features])  # Asegúrate de pasar los datos en el formato adecuado
+    # Realizar la predicción del precio utilizando el modelo cargado
+    precio_predicho = model.predict(df)
 
-    # Agregar el RMSE en la respuesta (puedes cambiar el valor del RMSE según lo que desees)
-    rmse = 12.144414904851764
-
-    # Devolver la respuesta en formato JSON con las predicciones y el RMSE
-    respuesta = {'prediccion_precio': predicciones[0], 'RMSE': rmse}
-    return respuesta
+    # Devolver la predicción del precio como resultado de la API
+    return {"precio_predicho": precio_predicho[0], "RMSE:", 8.36414991271523}
