@@ -82,26 +82,26 @@ def metascore(Año: str):
 
 import pandas as pd
 import pickle
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Form
 from fastapi.templating import Jinja2Templates
-from pydantic import BaseModel, conint
 
 # Cargar el modelo entrenado
 with open("model.pkl", "rb") as file:
     model = pickle.load(file)
 
-# Definir la estructura de datos que se enviará a la API
+# Definir una nueva clase para los parámetros de entrada
 class InputData(BaseModel):
-    early_access: conint(ge=0, le=1)
-    Action: conint(ge=0, le=1)
-    Adventure: conint(ge=0, le=1)
-    Simulation: conint(ge=0, le=1)
-    Strategy: conint(ge=0, le=1)
-    Indie: conint(ge=0, le=1)
-    Sports: conint(ge=0, le=1)
-    Philisophical: conint(ge=0, le=1)
+    early_access: int
+    Action: int
+    Adventure: int
+    Simulation: int
+    Strategy: int
+    Indie: int
+    Sports: int
+    Philisophical: int
 
-
+# Crear la aplicación FastAPI
+app = FastAPI()
 
 # Cargar las plantillas HTML
 templates = Jinja2Templates(directory="templates")
@@ -113,17 +113,26 @@ async def show_prediction_form(request: Request):
 
 # Ruta para hacer la predicción
 @app.post("/predict/")
-async def predict_price(input_data: InputData):
+async def predict_price(
+    early_access: int = Form(...),
+    Action: int = Form(...),
+    Adventure: int = Form(...),
+    Simulation: int = Form(...),
+    Strategy: int = Form(...),
+    Indie: int = Form(...),
+    Sports: int = Form(...),
+    Philisophical: int = Form(...),
+):
     # Crear un DataFrame con los datos de entrada
     data = {
-        "early_access": [input_data.early_access],
-        "Action": [input_data.Action],
-        "Adventure": [input_data.Adventure],
-        "Simulation": [input_data.Simulation],
-        "Strategy": [input_data.Strategy],
-        "Indie": [input_data.Indie],
-        "Sports": [input_data.Sports],
-        "Philisophical": [input_data.Philisophical]
+        "early_access": [early_access],
+        "Action": [Action],
+        "Adventure": [Adventure],
+        "Simulation": [Simulation],
+        "Strategy": [Strategy],
+        "Indie": [Indie],
+        "Sports": [Sports],
+        "Philisophical": [Philisophical]
     }
     input_df = pd.DataFrame(data)
 
