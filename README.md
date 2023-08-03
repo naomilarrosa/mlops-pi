@@ -10,7 +10,7 @@
 --- 
 ## `Descripción`
 
-Este proyecto tiene como objetivo desarrollar el rol de `Data Scientist`, aplicando técnicas de extracción, transformación y carga de datos (`ETL`), análisis exploratorio de datos (`EDA`) y creación de un sistema de predicción de precio de los juegos de steam basado en machine learning.
+Este proyecto tiene como objetivo desarrollar el rol de `Data Scientist` y Data Engineer, aplicando técnicas de extracción, transformación y carga de datos (`ETL`), análisis exploratorio de datos (`EDA`) y creación de un sistema de predicción de precio de los juegos de steam basado en machine learning.
 
 Para ello, se utilizará un set de datos de plataformas de steam, con el fin de explorar, entender los patrones  y así generar preddiones en los precios.
 
