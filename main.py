@@ -121,5 +121,5 @@ def predict(metascore: float = None, year: float = None, genre: Genre = None): #
         raise HTTPException(status_code=400, detail="Invalid input")
 
     # Devolver el precio como salida
-    return {"price": price} # Usar un diccionario en lugar de un modelo Pydantic
+    return {"price": price, "RMSE del modelo": 8.36414991271523}
 
