@@ -84,7 +84,7 @@ import pandas as pd
 import pickle
 from fastapi import FastAPI, HTTPException, Form
 from fastapi.templating import Jinja2Templates
-
+from pydantic import BaseModel
 # Cargar el modelo entrenado
 with open("model.pkl", "rb") as file:
     model = pickle.load(file)
