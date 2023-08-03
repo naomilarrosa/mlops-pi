@@ -88,7 +88,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import BaggingRegressor
 
 # Cargar el modelo entrenado
-with open("bagging_model.pkl", "rb") as file:
+with open("model.pkl", "rb") as file:
     model = pickle.load(file)
 from pydantic import BaseModel, conint
 
@@ -122,4 +122,4 @@ def predict_price(input_data: InputData):
     prediction = model.predict(input_df)
 
     # Devolver la predicción como resultado de la API
-    return {"predicted_price": prediction[0]}
+    return {"predicted_price": prediction[0]} 
