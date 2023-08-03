@@ -100,13 +100,19 @@ async def predict_price(genres: List[str], early_access: bool):
     if not isinstance(genres, list):
         genres = [genres]
     
+    # Crea el array de entrada para el modelo con one-hot encoding
+    genres_list = ['Action', 'Adventure', 'RPG', "Casual", "Indie", "Simulation"]  # Lista de todos los géneros generados por el one-hot encoding
+    input_data = np.zeros((1, len(genres_list)+1), dtype=int)  # +1 para agregar early_access
+    for genre in genres:
+        if genre in genres_list:
+            input_data[0, genres_list.index(genre)] = 1
+    
     # Convierte early_access a 0 o 1
     early_access = int(early_access)
-
-    # Crea el array de entrada para el modelo
-    input_data = np.array([[genres, early_access]])
+    input_data[0, -1] = early_access
 
     # Realiza la predicción
     predictions = make_prediction(input_data)
 
     return {"predictions": predictions.tolist()}
+
