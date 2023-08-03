@@ -78,56 +78,27 @@ def metascore(Año: str):
     # Obtener los top 5 juegos con mayor metascore en el año especificado
     top_metascore_juegos = df_year.nlargest(5, 'metascore')['app_name'].tolist()
     return top_metascore_juegos
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
 import pickle
+from fastapi import FastAPI, HTTPException
+import numpy as np
 
-class Item(BaseModel):
-    early_access: int
-    Adventure: float
-    Action: float
-    Indie: float
-    Casual: float
-    Simulation: float
-    Strategy: float
-    RPG: float
-    Sports: float
-    Racing: float
-    Massively_Multiplayer: float
-    Animation_Modeling: float
-    Video_Production: float
-    Utilities: float
-    Web_Publishing: float
-    Education: float
-    Software_Training: float
-    Design_Illustration: float
-    Audio_Production: float
-    Photo_Editing: float
-    Accounting: float
+app = FastAPI()
 
-def load_model_from_pickle():
-    # Cargar el modelo desde el archivo pickle
-    with open('model.pkl', 'rb') as file:
-        modelo_entrenado = pickle.load(file)
-    return modelo_entrenado
+# Cargar el modelo desde el archivo pickle
+with open('model.pickle', 'rb') as archivo_pickle:
+    modelo = pickle.load(archivo_pickle)
 
-def predict_price(input_data):
-    # Cargar el modelo desde el archivo pickle
-    model = load_model_from_pickle()
+@app.post('/predecir/')
+def predecir_precio(early_access: int, Action: int, Casual: int, Indie: int, Simulation: int, Strategy: int, RPG: int, Sports: int, Adventure: int, Racing: int, Massively_Multiplayer: int, Animation_Modeling: int, Video_Production: int, Utilities: int, Web_Publishing: int, Education: int, Software_Training: int, Design_Illustration: int, Audio_Production: int, Photo_Editing: int, Accounting: int):
+    # Convertir los parámetros en una lista de características
+    features = [early_access, Action, Casual, Indie, Simulation, Strategy, RPG, Sports, Adventure, Racing, Massively_Multiplayer, Animation_Modeling, Video_Production, Utilities, Web_Publishing, Education, Software_Training, Design_Illustration, Audio_Production, Photo_Editing, Accounting]
 
-    # Realizar la predicción
-    prediction = model.predict(input_data)
+    # Realizar la predicción con el modelo
+    predicciones = modelo.predict([features])  # Asegúrate de pasar los datos en el formato adecuado
 
-    # Tomar el valor de la predicción
-    prediction_value = prediction[0]
+    # Agregar el RMSE en la respuesta (puedes cambiar el valor del RMSE según lo que desees)
+    rmse = 12.144414904851764
 
-    return prediction_value
-
-@app.post("/predict_price/")
-async def get_prediction(item: Item):
-    try:
-        input_data = [list(item.dict().values())]
-        prediction = predict_price(input_data)
-        return {"prediction": prediction}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    # Devolver la respuesta en formato JSON con las predicciones y el RMSE
+    respuesta = {'prediccion_precio': predicciones[0], 'RMSE': rmse}
+    return respuesta
