@@ -79,7 +79,7 @@ def metascore(Año: str):
     top_metascore_juegos = df_year.nlargest(5, 'metascore')['app_name'].tolist()
     return top_metascore_juegos
 import pickle
-
+from sklearn.preprocessing import StandardScaler
 
 # Cargar el modelo entrenado desde el archivo pickle
 with open("model.pkl", "rb") as f:
@@ -88,6 +88,11 @@ with open("model.pkl", "rb") as f:
 # Definir los géneros disponibles en el conjunto de datos
 generos_disponibles = ["Action", "Adventure", "Casual", "Early Access", "Free to Play", "Indie", "Massively Multiplayer", "RPG", "Racing", "Simulation", "Sports", "Strategy", "Video Production"]
 
+# Crear la aplicación FastAPI
+app = FastAPI()
+
+# Crear un objeto StandardScaler para escalar los datos
+scaler = StandardScaler()
 
 @app.post("/prediccion_precio/")
 def prediccion_precio(year: int, metascore: float, genero: str):
@@ -104,9 +109,13 @@ def prediccion_precio(year: int, metascore: float, genero: str):
 
     df = pd.DataFrame(data)
 
-    # Realizar la predicción del precio utilizando el modelo cargado
-    precio_predicho = model.predict(df)
+    # Escalar los datos
+    df_scaled = scaler.transform(df)
 
-    # Devolver la predicción del precio y el RMSE como resultado de la API
+    # Realizar la predicción del precio utilizando el modelo cargado
+    precio_predicho = model.predict(df_scaled)
+
+    # Devolver la predicción del precio como resultado de la API
     return {"precio_predicho": precio_predicho[0], "RMSE": 8.36414991271523}
+
 
