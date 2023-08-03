@@ -101,5 +101,6 @@ def prediccion_precio(year: int, metascore: float, genero: str):
             data[genero_disponible] = [0]  # Establecer a 0 los otros géneros
 
     df = pd.DataFrame(data)
+    precio_predicho = model.predict(df)
     # Devolver la predicción del precio como resultado de la API
     return {"precio_predicho": precio_predicho[0], "RMSE": 8.36414991271523}
