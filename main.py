@@ -84,9 +84,26 @@ import pickle
 
 class Item(BaseModel):
     early_access: int
-    Adventure: int
-    Action: int
-    Indie: int
+    Adventure: float
+    Action: float
+    Indie: float
+    Casual: float
+    Simulation: float
+    Strategy: float
+    RPG: float
+    Sports: float
+    Racing: float
+    Massively_Multiplayer: float
+    Animation_Modeling: float
+    Video_Production: float
+    Utilities: float
+    Web_Publishing: float
+    Education: float
+    Software_Training: float
+    Design_Illustration: float
+    Audio_Production: float
+    Photo_Editing: float
+    Accounting: float
 
 def load_model_from_pickle():
     # Cargar el modelo desde el archivo pickle
@@ -100,7 +117,7 @@ def predict_price(early_access, Adventure, Action, Indie):
     model = load_model_from_pickle()
 
     # Preparar los datos para la predicción
-    input_data = [[early_access, Adventure, Action, Indie]]
+    input_data = [[early_access, Adventure, Action, Indie, Casual, Simulation, Strategy, RPG, Sports, Racing, Massively_Multiplayer, Animation_Modeling, Video_Production, Utilities, Web_Publishing, Education, Software_Training, Design_Illustration, Audio_Production, Photo_Editing, Accounting]]
 
     # Realizar la predicción
     prediction = model.predict(input_data)
@@ -114,7 +131,7 @@ def predict_price(early_access, Adventure, Action, Indie):
 async def get_prediction(item: Item):
     try:
         model = load_model_from_pickle()
-        prediction = predict_price(item.early_access, item.Adventure, item.Action, item.Indie)
+        prediction = predict_price(item.early_access, item.Adventure, item.Action, item.Indie, item.Casual, item.Simulation, item.Strategy, item.RPG, item.Sports, item.Racing, item.Massively_Multiplayer, item.Animation_Modeling, item.Video_Production, item.Utilities, item.Web_Publishing, item.Education, item.Software_Training, item.Design_Illustration, item.Audio_Production, item.Photo_Editing, item.Accounting)
         return {"prediction": prediction}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
