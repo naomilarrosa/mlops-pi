@@ -19,7 +19,8 @@ El proyecto abarca desde la extracción de los datos, hasta la implementación d
 Finalmente, se desplegará el proyecto como una `API` virtual en la plataforma de la nube de Render, lo que permitirá el acceso a los resultados desde cualquier lugar y dispositivo.
 
 Este proyecto es una oportunidad para explorar en profundidad el proceso de desarrollo de un sistema de predicción y las herramientas utilizadas en el camino, así como para aprender sobre el manejo y análisis de datos en el contexto de la plataforma de juegos.
-En este proyecto nos proponían empezar desde cero haciendo un trabajo rápido de data engineer y tener un MVP (Minimum Viable Product), para el cierre del proyecto. Nos pedían realizar una API REST con 6 funciones:  def genero( Año: str ): Se ingresa un año y devuelve una lista con los 5 géneros más ofrecidos en el orden correspondiente.
+
+Nos proponían empezar desde cero haciendo un trabajo rápido de data engineer y tener un MVP (Minimum Viable Product), para el cierre del proyecto. Realizando una API REST con 6 funciones:  def genero( Año: str ): Se ingresa un año y devuelve una lista con los 5 géneros más ofrecidos en el orden correspondiente.
 
 def juegos( Año: str ): Se ingresa un año y devuelve una lista con los juegos lanzados en el año.
 
