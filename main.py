@@ -114,12 +114,16 @@ def predict(metascore: float = None, year: float = None, genre: Genre = None): #
     # Convertir el input en un DataFrame con las columnas necesarias para el modelo
     input_df = pd.DataFrame([[metascore, year, *[1 if genre.value == g else 0 for g in Genre._member_names_]]], columns=['metascore', 'year', *Genre._member_names_])
     
-    # Realizar la predicción con el modelo
-    try:
-        price = model.predict(input_df)[0]
-    except:
-        raise HTTPException(status_code=400, detail="Invalid input")
+    # Verificar si el género es Free to Play
+    if genre == Genre.Free_to_Play:
+        # Devolver 0 como precio
+        return {"price": 0, "RMSE": 8.36414991271523}
+    else:
+        # Realizar la predicción con el modelo
+        try:
+            price = model.predict(input_df)[0]
+        except:
+            raise HTTPException(status_code=400, detail="Invalid input")
 
-    # Devolver el precio como salida
-    return {"price": price, "RMSE del modelo": 8.36414991271523}
-
+        # Devolver el precio y el RMSE como salida
+        return {"price": price, "RMSE del modelo": 8.36414991271523}
