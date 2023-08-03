@@ -111,4 +111,4 @@ def prediccion_precio(year: int, metascore: float, genero: str):
     precio_predicho = model.predict(df)
 
     # Devolver la predicción del precio como resultado de la API
-    return {"precio_predicho": precio_predicho[0], "RMSE:", 8.36414991271523}
+    return {"precio_predicho": precio_predicho[0], "RMSE:" 8.36414991271523}
