@@ -78,3 +78,43 @@ def metascore(Año: str):
     # Obtener los top 5 juegos con mayor metascore en el año especificado
     top_metascore_juegos = df_year.nlargest(5, 'metascore')['app_name'].tolist()
     return top_metascore_juegos
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+import pickle
+
+class Item(BaseModel):
+    early_access: int
+    Adventure: int
+    Action: int
+    Indie: int
+
+def load_model_from_pickle():
+    # Cargar el modelo desde el archivo pickle
+    with open('model.pkl', 'rb') as file:
+        modelo_entrenado = pickle.load(file)
+    return modelo_entrenado
+
+def predict_price(early_access, Adventure, Action, Indie):
+    # Aquí va el código para realizar la predicción utilizando el modelo cargado
+    # Supongamos que tu modelo es un modelo de regresión
+    model = load_model_from_pickle()
+
+    # Preparar los datos para la predicción
+    input_data = [[early_access, Adventure, Action, Indie]]
+
+    # Realizar la predicción
+    prediction = model.predict(input_data)
+
+    # Tomar el valor de la predicción
+    prediction_value = prediction[0]
+
+    return prediction_value
+
+@app.post("/predict_price/")
+async def get_prediction(item: Item):
+    try:
+        model = load_model_from_pickle()
+        prediction = predict_price(item.early_access, item.Adventure, item.Action, item.Indie)
+        return {"prediction": prediction}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
