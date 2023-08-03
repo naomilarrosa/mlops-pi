@@ -81,6 +81,7 @@ def metascore(Año: str):
 import pickle
 import pandas as pd
 from fastapi import FastAPI
+from pydantic import BaseModel
 
 # Cargar el modelo entrenado desde el archivo pickle
 with open("model.pkl", "rb") as f:
