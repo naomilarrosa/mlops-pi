@@ -82,8 +82,6 @@ import pickle
 from fastapi import FastAPI, HTTPException
 import numpy as np
 
-app = FastAPI()
-
 # Cargar el modelo desde el archivo pickle
 with open('model.pickle', 'rb') as archivo_pickle:
     modelo = pickle.load(archivo_pickle)
