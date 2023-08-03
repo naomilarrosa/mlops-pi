@@ -79,10 +79,11 @@ def metascore(Año: str):
     top_metascore_juegos = df_year.nlargest(5, 'metascore')['app_name'].tolist()
     return top_metascore_juegos
 
+
+from fastapi import HTTPException
 from typing import List
 import pickle
 import numpy as np
-
 def load_model():
     with open('bagging_model.pkl', 'rb') as file:
         model = pickle.load(file)
@@ -95,6 +96,19 @@ def make_prediction(input_data):
 
 @app.post("/predict/")
 async def predict_price(genres: List[str], early_access: bool):
-    input_data = np.array([[genres, early_access]])
+    # Verificar si el modelo espera las columnas correctas
+    expected_features = ['Action', 'Adventure', 'RPG', 'Simulation', 'Sports', 'Early Access']
+    for genre in genres:
+        if genre not in expected_features:
+            raise HTTPException(status_code=400, detail=f"Genre '{genre}' not supported by the model.")
+    if 'Early Access' not in expected_features and early_access:
+        raise HTTPException(status_code=400, detail="Early Access not supported by the model.")
+    
+    # Transformar las características a one-hot encoding
+    input_data = np.zeros((1, len(expected_features) + 1))
+    for genre in genres:
+        input_data[0, expected_features.index(genre)] = 1
+    input_data[0, -1] = int(early_access)
+    
     predictions = make_prediction(input_data)
     return {"predictions": predictions.tolist()}
