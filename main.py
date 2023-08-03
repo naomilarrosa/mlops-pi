@@ -100,6 +100,7 @@ def prediccion_precio(year: int, metascore: float, genero: str):
     data = {
         "year": [year],
         "metascore": [metascore]
+        genero: [1]  # Establecer a 1 el género seleccionado
     }
     for genero_disponible in generos_disponibles:
         if genero_disponible == genero:
