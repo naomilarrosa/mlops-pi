@@ -81,45 +81,31 @@ def metascore(Año: str):
 # Importar las librerías necesarias
 import pickle
 import pandas as pd
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request, Form
 from pydantic import BaseModel
-from enum import Enum
 
 # Cargar el modelo pickle
 with open("model.pkl", "rb") as f:
     model = pickle.load(f)
 
-# Crear el Enum de géneros
-class Genre(Enum):
-    Action = "Action"
-    Adventure = "Adventure"
-    Casual = "Casual"
-    Early_Access = "Early Access"
-    Free_to_Play = "Free to Play"
-    Indie = "Indie"
-    Massively_Multiplayer = "Massively Multiplayer"
-    RPG = "RPG"
-    Racing = "Racing"
-    Simulation = "Simulation"
-    Sports = "Sports"
-    Strategy = "Strategy"
-    Video_Production = "Video Production"
-
 # Definir el esquema de entrada con tres parámetros
 class Input(BaseModel):
     metascore: float
     year: float
-    genre: Genre
+    genre: str
 
 # Definir el esquema de salida
 class Output(BaseModel):
     price: float
 
-# Definir la ruta de predicción
+# Crear la aplicación FastAPI
+app = FastAPI()
+
+# Definir la ruta de predicción usando datos del formulario
 @app.post("/predict", response_model=Output)
-def predict(input: Input):
+def predict(request: Request, metascore: float = Form(...), year: float = Form(...), genre: str = Form(...)):
     # Convertir el input en un DataFrame con las columnas necesarias para el modelo
-    input_df = pd.DataFrame([[input.metascore, input.year, *[1 if input.genre.value == g else 0 for g in Genre._member_names_]]], columns=['metascore', 'year', *Genre._member_names_])
+    input_df = pd.DataFrame([[metascore, year, *[1 if genre == g else 0 for g in ['Action', 'Adventure', 'Casual', 'Early Access', 'Free to Play', 'Indie', 'Massively Multiplayer', 'RPG', 'Racing', 'Simulation', 'Sports', 'Strategy', 'Video Production']]]], columns=['metascore', 'year', 'Action', 'Adventure', 'Casual', 'Early Access', 'Free to Play', 'Indie', 'Massively Multiplayer', 'RPG', 'Racing', 'Simulation', 'Sports', 'Strategy', 'Video Production'])
     
     # Realizar la predicción con el modelo
     try:
