@@ -84,31 +84,22 @@ import pickle
 with open("model.pkl", "rb") as f:
     model = pickle.load(f)
 
+# Definir los géneros disponibles en el conjunto de datos
+generos_disponibles = ["Action", "Adventure", "Casual", "Early Access", "Free to Play", "Indie", "Massively Multiplayer", "RPG", "Racing", "Simulation", "Sports", "Strategy", "Video Production"]
+
 @app.post("/prediccion_precio/")
 def prediccion_precio(year: int, metascore: float, genero: str):
     # Crear un DataFrame con los datos de entrada
     data = {
         "year": [year],
-        "metascore": [metascore],
-        "Action": [0],
-        "Adventure": [0],
-        "Casual": [0],
-        "Early Access": [0],
-        "Free to Play": [0],
-        "Indie": [0],
-        "Massively Multiplayer": [0],
-        "RPG": [0],
-        "Racing": [0],
-        "Simulation": [0],
-        "Sports": [0],
-        "Strategy": [0],
-        "Video Production": [0],
+        "metascore": [metascore]
     }
+    for genero_disponible in generos_disponibles:
+        if genero_disponible == genero:
+            data[genero_disponible] = [1]  # Establecer a 1 el género seleccionado
+        else:
+            data[genero_disponible] = [0]  # Establecer a 0 los otros géneros
+
     df = pd.DataFrame(data)
-    df[genero] = 1
-
-    # Realizar la predicción del precio utilizando el modelo cargado
-    precio_predicho = model.predict(df)
-
     # Devolver la predicción del precio como resultado de la API
     return {"precio_predicho": precio_predicho[0], "RMSE": 8.36414991271523}
