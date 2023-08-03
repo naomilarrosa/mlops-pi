@@ -80,39 +80,46 @@ def metascore(Año: str):
     return top_metascore_juegos
 
 
-from typing import List
+import pandas as pd
 import pickle
-import numpy as np
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import BaggingRegressor
 
-def load_model():
-    with open('bagging_model.pkl', 'rb') as file:
-        model = pickle.load(file)
-    return model
+# Cargar el modelo entrenado
+with open("bagging_model.pkl", "rb") as file:
+    model = pickle.load(file)
+from pydantic import BaseModel, conint
 
-def make_prediction(input_data):
-    model = load_model()
-    predictions = model.predict(input_data)
-    return predictions
+class InputData(BaseModel):
+    early_access: conint(ge=0, le=1)
+    Action: conint(ge=0, le=1)
+    Adventure: conint(ge=0, le=1)
+    Simulation: conint(ge=0, le=1)
+    Strategy: conint(ge=0, le=1)
+    Indie: conint(ge=0, le=1)
+    Sports: conint(ge=0, le=1)
+    Philisophical: conint(ge=0, le=1)
 
+    # Ruta para hacer la predicción
 @app.post("/predict/")
-async def predict_price(genres: List[str], early_access: bool):
-    # Convierte los géneros a formato de lista si no lo están
-    if not isinstance(genres, list):
-        genres = [genres]
-    
-    # Crea el array de entrada para el modelo con one-hot encoding
-    genres_list = ['Action', 'Adventure', 'RPG', "Casual", "Indie", "Simulation"]  # Lista de todos los géneros generados por el one-hot encoding
-    input_data = np.zeros((1, len(genres_list)+1), dtype=int)  # +1 para agregar early_access
-    for genre in genres:
-        if genre in genres_list:
-            input_data[0, genres_list.index(genre)] = 1
-    
-    # Convierte early_access a 0 o 1
-    early_access = int(early_access)
-    input_data[0, -1] = early_access
+def predict_price(input_data: InputData):
+    # Crear un DataFrame con los datos de entrada
+    data = {
+        "early_access": [input_data.early_access],
+        "Action": [input_data.Action],
+        "Adventure": [input_data.Adventure],
+        "Simulation": [input_data.Simulation],
+        "Strategy": [input_data.Strategy],
+        "Indie": [input_data.Indie],
+        "Sports": [input_data.Sports],
+        "Philisophical": [input_data.Philisophical]
+    }
+    input_df = pd.DataFrame(data)
 
-    # Realiza la predicción
-    predictions = make_prediction(input_data)
+    # Hacer la predicción utilizando el modelo cargado
+    prediction = model.predict(input_df)
 
-    return {"predictions": predictions.tolist()}
-
+    # Devolver la predicción como resultado de la API
+    return {"predicted_price": prediction[0]}
