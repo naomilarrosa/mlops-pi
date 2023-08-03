@@ -19,7 +19,20 @@ El proyecto abarca desde la extracción de los datos, hasta la implementación d
 Finalmente, se desplegará el proyecto como una `API` virtual en la plataforma de la nube de Render, lo que permitirá el acceso a los resultados desde cualquier lugar y dispositivo.
 
 Este proyecto es una oportunidad para explorar en profundidad el proceso de desarrollo de un sistema de predicción y las herramientas utilizadas en el camino, así como para aprender sobre el manejo y análisis de datos en el contexto de la plataforma de juegos.
+En este proyecto nos proponían empezar desde cero haciendo un trabajo rápido de data engineer y tener un MVP (Minimum Viable Product), para el cierre del proyecto. Nos pedían realizar una API REST con 6 funciones:  def genero( Año: str ): Se ingresa un año y devuelve una lista con los 5 géneros más ofrecidos en el orden correspondiente.
 
+def juegos( Año: str ): Se ingresa un año y devuelve una lista con los juegos lanzados en el año.
+
+def specs( Año: str ): Se ingresa un año y devuelve una lista con los 5 specs que más se repiten en el mismo en el orden correspondiente.
+
+def earlyacces( Año: str ): Cantidad de juegos lanzados en un año con early access.
+
+def sentiment( Año: str ): Según el año de lanzamiento, se devuelve una lista con la cantidad de registros que se encuentren categorizados con un análisis de sentimiento.
+
+                    Ejemplo de retorno: {Mixed = 182, Very Positive = 120, Positive = 278}
+
+def metascore( Año: str ): Top 5 juegos según año con mayor metascore.
+Y por último, crear un modelo de predicción en el que, con las variables que nosotros los alumnos elijamos, deberíamos predecir el precio del juego y el RMSE.
 ## `API`
 
 A continuación estará el enlace a la respectiva api y su documentación: 
