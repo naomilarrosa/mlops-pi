@@ -34,7 +34,7 @@ def sentiment( Año: str ): Según el año de lanzamiento, se devuelve una lista
 
 def metascore( Año: str ): Top 5 juegos según año con mayor metascore.
 
-Y por último, crear un modelo de predicción en el que, con las variables que nosotros los alumnos elijamos, deberíamos predecir el precio del juego y el RMSE.
+Y por último, crear un modelo de predicción en el que, con las variables elejidas, deberíamos predecir el precio del juego y el RMSE del modelo.
 ## `API`
 
 A continuación estará el enlace a la respectiva api y su documentación: 
