@@ -1,10 +1,13 @@
 # Bibliotecas necesarias y creación de la aplicación FastAPI:
 from fastapi import FastAPI
-
+import pickle
+import pandas as pd
+from fastapi import FastAPI, HTTPException
+from enum import Enum
+import ast
 app = FastAPI(title="Proyecto MLOps By Naomi")
 # Creamos el DataFrame
 import ast
-import pandas as pd
 
 rows = []
 with open("steam_games.json") as f:
@@ -45,7 +48,14 @@ def specs(Año: str):
     top_specs = df_year['specs'].explode().value_counts().head(5).index.tolist()
     return top_specs
 # Función para obtener la cantidad de juegos lanzados en un año con early access
-import pandas as pd  # Asegúrate de importar pandas si aún no lo has hecho
+@app.get('/earlyacces/')
+def earlyacces(Año: str):
+    # Filtrar el DataFrame para el año especificado
+    mask = (df['release_date'].str.startswith(Año, na=False)) & (df["early_access"] == True)
+    df_year = df[mask]
+    
+    games = len(df_year)
+    return {"games": games}
 
 # Suponiendo que el DataFrame "df" está definido globalmente o se pasa como un parámetro a la función
 
@@ -81,11 +91,6 @@ def metascore(Año: str):
     # Obtener los top 5 juegos con mayor metascore en el año especificado
     top_metascore_juegos = df_year.nlargest(5, 'metascore')['app_name'].tolist()
     return top_metascore_juegos
-# Importar las librerías necesarias
-import pickle
-import pandas as pd
-from fastapi import FastAPI, HTTPException
-from enum import Enum
 
 # Cargar el modelo pickle
 with open("model.pkl", "rb") as f:
