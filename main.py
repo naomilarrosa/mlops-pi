@@ -49,14 +49,13 @@ import pandas as pd  # Asegúrate de importar pandas si aún no lo has hecho
 
 # Suponiendo que el DataFrame "df" está definido globalmente o se pasa como un parámetro a la función
 
-@app.get('/earlyacces/')
-def earlyacces(Año: str):
-    # Filtrar el DataFrame para el año especificado
-    mask = (df['release_date'].str.startswith(Año, na=False)) & (df["early_access"] == True)
-    df_year = df[mask]
-    
-    games = len(df_year)
-    return {"games": games}
+# Crear una lista con los valores de sentimientos válidos
+sentiments = ['Overwhelmingly Positive', 'Very Positive', 'Positive', 'Mostly Positive',
+ 'Mixed', 'Mostly Negative', 'Negative', 'Very Negative',
+ 'Overwhelmingly Negative']
+
+# Filtrar el DataFrame para quedarse solo con las filas que tengan esos valores en la columna 'sentiment'
+df = df[df['sentiment'].isin(sentiments)]
 
 # Función para obtener el análisis de sentimiento por año
 @app.get('/sentiment/')
@@ -66,6 +65,10 @@ def sentiment(Año: str):
     
     # Obtener el análisis de sentimiento y contar la cantidad de registros en cada categoría
     analisis_sentimiento = df_year['sentiment'].value_counts().to_dict()
+    
+    # Imprimir los valores disponibles de sentimientos
+    print(df['sentiment'].unique())
+    
     return analisis_sentimiento
 # Convertir la columna 'metascore' a un dtype numérico (si contiene valores numéricos)
 df['metascore'] = pd.to_numeric(df['metascore'], errors='coerce')
