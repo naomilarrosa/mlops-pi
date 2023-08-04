@@ -120,7 +120,7 @@ def predict(metascore: float = None, year: float = None, genre: Genre = None): #
     # Verificar si el género es Free to Play
     if genre == Genre.Free_to_Play:
         # Devolver 0 como precio
-        return {"price": 0, "RMSE": 8.36414991271523}
+        return {"price": 0, "RMSE del modelo": 8.36414991271523}
     else:
         # Realizar la predicción con el modelo
         try:
