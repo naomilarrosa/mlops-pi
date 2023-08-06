@@ -118,16 +118,16 @@ class Genre(Enum):
 
 # Definir la ruta de predicción
 @app.get("/predicción") 
-def predict(metascore: float = None, early_access: bool = None, year: str = None, genre: Genre = None):
+def predict(metascore: float = None, earlyaccess: bool = None, Año: str = None, genero: Genre = None):
     # Validar que se hayan pasado los parámetros necesarios
-    if metascore is None or year is None or genre is None or early_access is None:
+    if metascore is None or Año is None or genero is None or earlyaccess is None:
         raise HTTPException(status_code=400, detail="Missing parameters")
     
     # Convertir el input en un DataFrame con las columnas necesarias para el modelo
-    input_df = pd.DataFrame([[metascore, early_access, year, *[1 if genre.value == g else 0 for g in Genre._member_names_]]], columns=['metascore', 'year', 'early_access', *Genre._member_names_])
+    input_df = pd.DataFrame([[metascore, earlyaccess, Año, *[1 if genero.value == g else 0 for g in Genre._member_names_]]], columns=['metascore', 'year', 'early_access', *Genre._member_names_])
     
     # Verificar si el género es Free to Play
-    if genre == Genre.Free_to_Play:
+    if genero == Genre.Free_to_Play:
         # Devolver 0 como precio
         return {"price": 0, "RMSE del modelo": 8.36}
     else:
