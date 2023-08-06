@@ -26,9 +26,12 @@ def genero(Año: str):
     # Filtrar el DataFrame para el año especificado
     df_year = df[df['release_date'].str.startswith(Año)]
     
-    # Obtener los géneros más vendidos en el año especificado
-    top_generos = df_year['genres'].explode().value_counts().head(5).to_dict(orient='index')
-    return top_generos
+        # Obtener los géneros y sus ventas en el año especificado
+    generos_ventas = df_year['genres'].explode().value_counts().head(5)
+    
+    # Convertir la serie a un diccionario con el género como llave y la venta como valor
+    generos_dict = generos_ventas.to_dict(orient='dict')
+    return generos_dict
 
 # Función para obtener los juegos lanzados en un año
 @app.get('/juegos/')
@@ -115,7 +118,7 @@ class Genre(Enum):
 
 # Definir la ruta de predicción
 @app.get("/predicción") 
-def predicción(metascore: float = None, year: float = None, genre: Genre = None): # Usar los tipos directamente y asignar None como valor por defecto
+def predict(metascore: float = None, year: float = None, genre: Genre = None): # Usar los tipos directamente y asignar None como valor por defecto
     # Validar que se hayan pasado los parámetros necesarios
     if metascore is None or year is None or genre is None:
         raise HTTPException(status_code=400, detail="Missing parameters")
@@ -130,7 +133,7 @@ def predicción(metascore: float = None, year: float = None, genre: Genre = None
     else:
         # Realizar la predicción con el modelo
         try:
-            price = model.predicción(input_df)[0]
+            price = model.predict(input_df)[0]
         except:
             raise HTTPException(status_code=400, detail="Invalid input")
 
