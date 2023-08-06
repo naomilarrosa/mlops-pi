@@ -118,18 +118,18 @@ class Genre(Enum):
 
 # Definir la ruta de predicción
 @app.get("/predicción") 
-def predict(metascore: float = None, year: float = None, genre: Genre = None): # Usar los tipos directamente y asignar None como valor por defecto
+def predict(metascore: float = None, year: float = None, genre: Genre = None, early_access: bool = None):
     # Validar que se hayan pasado los parámetros necesarios
-    if metascore is None or year is None or genre is None:
+    if metascore is None or year is None or genre is None or early_access is None:
         raise HTTPException(status_code=400, detail="Missing parameters")
-
+    
     # Convertir el input en un DataFrame con las columnas necesarias para el modelo
-    input_df = pd.DataFrame([[metascore, year, *[1 if genre.value == g else 0 for g in Genre._member_names_]]], columns=['metascore', 'year', *Genre._member_names_])
+    input_df = pd.DataFrame([[metascore, year, early_access, *[1 if genre.value == g else 0 for g in Genre._member_names_]]], columns=['metascore', 'year', 'early_access', *Genre._member_names_])
     
     # Verificar si el género es Free to Play
     if genre == Genre.Free_to_Play:
         # Devolver 0 como precio
-        return {"price": 0, "RMSE del modelo": 8.36414991271523}
+        return {"price": 0, "RMSE del modelo": 8.36}
     else:
         # Realizar la predicción con el modelo
         try:
@@ -138,4 +138,4 @@ def predict(metascore: float = None, year: float = None, genre: Genre = None): #
             raise HTTPException(status_code=400, detail="Invalid input")
 
         # Devolver el precio y el RMSE como salida
-        return {"price": price, "RMSE del modelo": 8.36414991271523}
+        return {"price": price, "RMSE del modelo": 8.36}
