@@ -34,7 +34,7 @@ Nos proponían empezar desde cero haciendo un trabajo rápido de data engineer y
 
 `def metascore( Año: str ): Top 5 juegos según año con mayor metascore.`
 
-Y por último, crear un `modelo de predicción` en el que, con las variables elejidas (metascore, año y género), deberíamos predecir el precio del juego y el RMSE del modelo.
+Y por último, crear un `modelo de predicción` en el que, con las variables elejidas (metascore, earlyaccess(acceso temprano), año y género), deberíamos predecir el precio del juego y el RMSE del modelo.
 ## `API`
 
 A continuación estará el enlace a la respectiva api y su documentación: 
