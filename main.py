@@ -24,7 +24,7 @@ df["release_date"].fillna(VALOR_TEMPORAL, inplace=True)
 @app.get('/genero/')
 def genero(Año: str):
     # Filtrar el DataFrame para el año especificado
-    df_year = df[df['release_date'].str.startswith(Año)]
+    df_year = df[df['release_date'].str.contains(Año)]
     
     # Obtener el conteo de géneros en el año especificado
     conteo_generos = df_year['genres'].explode().value_counts().to_dict()
@@ -37,7 +37,7 @@ def genero(Año: str):
 @app.get('/juegos/')
 def juegos(Año: str):
     # Filtrar el DataFrame para el año especificado
-    df_year = df[df['release_date'].str.startswith(Año)]
+    df_year = df[df['release_date'].str.contains(Año)]
     
     # Obtener los juegos lanzados en el año especificado
     juegos_lanzados = df_year['app_name'].tolist()
@@ -46,7 +46,7 @@ def juegos(Año: str):
 @app.get('/specs/')
 def specs(Año: str):
     # Filtrar el DataFrame para el año especificado
-    df_year = df[df['release_date'].str.startswith(Año)]
+    df_year = df[df['release_date'].str.contains(Año)]
     
     # Obtener los specs más repetidos en el año especificado
     top_specs = df_year['specs'].explode().value_counts().head(5).index.tolist()
@@ -55,7 +55,7 @@ def specs(Año: str):
 @app.get('/earlyacces/')
 def earlyacces(Año: str):
     # Filtrar el DataFrame para el año especificado
-    mask = (df['release_date'].str.startswith(Año, na=False)) & (df["early_access"] == True)
+    mask = (df['release_date'].str.contains(Año, na=False)) & (df["early_access"] == True)
     df_year = df[mask]
     
     games = len(df_year)
@@ -75,7 +75,7 @@ df = df[df['sentiment'].isin(sentiments)]
 @app.get('/sentiment/')
 def sentiment(Año: str):
     # Filtrar el DataFrame para el año especificado
-    df_year = df[df['release_date'].str.startswith(Año)]
+    df_year = df[df['release_date'].str.contains(Año)]
     
     # Obtener el análisis de sentimiento y contar la cantidad de registros en cada categoría
     analisis_sentimiento = df_year['sentiment'].value_counts().to_dict()
@@ -90,7 +90,7 @@ df['metascore'] = pd.to_numeric(df['metascore'], errors='coerce')
 @app.get('/metascore/')
 def metascore(Año: str):
     # Filtrar el DataFrame para el año especificado
-    df_year = df[df['release_date'].str.startswith(Año)]
+    df_year = df[df['release_date'].str.contains(Año)]
     
     # Obtener los top 5 juegos con mayor metascore en el año especificado
     top_metascore_juegos = df_year.nlargest(5, 'metascore')[['app_name', 'metascore']].to_dict('records')
