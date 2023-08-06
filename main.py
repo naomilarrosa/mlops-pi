@@ -27,8 +27,9 @@ def genero(Año: str):
     df_year = df[df['release_date'].str.startswith(Año)]
     
     # Obtener los géneros más vendidos en el año especificado
-    top_generos = df_year['genres'].explode().value_counts().head(5).index.tolist()
+    top_generos = df_year['genres'].explode().value_counts().head(5).to_dict(orient='index')
     return top_generos
+
 # Función para obtener los juegos lanzados en un año
 @app.get('/juegos/')
 def juegos(Año: str):
@@ -37,7 +38,7 @@ def juegos(Año: str):
     
     # Obtener los juegos lanzados en el año especificado
     juegos_lanzados = df_year['app_name'].tolist()
-    return juegos_lanzados
+    return {Año: juegos_lanzados}
 # Función para obtener los 5 specs más repetidos en un año
 @app.get('/specs/')
 def specs(Año: str):
@@ -46,7 +47,7 @@ def specs(Año: str):
     
     # Obtener los specs más repetidos en el año especificado
     top_specs = df_year['specs'].explode().value_counts().head(5).index.tolist()
-    return top_specs
+    return {Año: top_specs}
 # Función para obtener la cantidad de juegos lanzados en un año con early access
 @app.get('/earlyacces/')
 def earlyacces(Año: str):
@@ -55,7 +56,7 @@ def earlyacces(Año: str):
     df_year = df[mask]
     
     games = len(df_year)
-    return {"games": games}
+    return {"Cantidad de Juegos": games}
 
 # Suponiendo que el DataFrame "df" está definido globalmente o se pasa como un parámetro a la función
 
@@ -89,7 +90,7 @@ def metascore(Año: str):
     df_year = df[df['release_date'].str.startswith(Año)]
     
     # Obtener los top 5 juegos con mayor metascore en el año especificado
-    top_metascore_juegos = df_year.nlargest(5, 'metascore')['app_name'].tolist()
+    top_metascore_juegos = df_year.nlargest(5, 'metascore')[['app_name', 'metascore']].to_dict('records')
     return top_metascore_juegos
 
 # Cargar el modelo pickle
@@ -113,8 +114,8 @@ class Genre(Enum):
     Video_Production = "Video Production"
 
 # Definir la ruta de predicción
-@app.get("/predict") # Cambiar el método a GET y quitar el response_model
-def predict(metascore: float = None, year: float = None, genre: Genre = None): # Usar los tipos directamente y asignar None como valor por defecto
+@app.get("/predicción") 
+def predicción(metascore: float = None, year: float = None, genre: Genre = None): # Usar los tipos directamente y asignar None como valor por defecto
     # Validar que se hayan pasado los parámetros necesarios
     if metascore is None or year is None or genre is None:
         raise HTTPException(status_code=400, detail="Missing parameters")
@@ -129,7 +130,7 @@ def predict(metascore: float = None, year: float = None, genre: Genre = None): #
     else:
         # Realizar la predicción con el modelo
         try:
-            price = model.predict(input_df)[0]
+            price = model.predicción(input_df)[0]
         except:
             raise HTTPException(status_code=400, detail="Invalid input")
 
