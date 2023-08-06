@@ -43,7 +43,7 @@ A continuación estará el enlace a la respectiva api y su documentación:
 
 Además de un video explicativo acerca de esta : 
 
-+ https://www.youtube.com/watch?v=_i6Ku3UrnOQ
++ https://youtu.be/u_WPxImyaJs
 
 ## `Estructura del repositorio`
 
