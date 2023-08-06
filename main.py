@@ -118,7 +118,7 @@ class Genre(Enum):
 
 # Definir la ruta de predicción
 @app.get("/predicción") 
-def predict(metascore: float = None, early_access: bool = None, year: float = None, genre: Genre = None):
+def predict(metascore: float = None, early_access: bool = None, year: str = None, genre: Genre = None):
     # Validar que se hayan pasado los parámetros necesarios
     if metascore is None or year is None or genre is None or early_access is None:
         raise HTTPException(status_code=400, detail="Missing parameters")
