@@ -26,12 +26,10 @@ def genero(Año: str):
     # Filtrar el DataFrame para el año especificado
     df_year = df[df['release_date'].str.startswith(Año)]
     
-        # Obtener los géneros y sus ventas en el año especificado
-    generos_ventas = df_year['genres'].explode().value_counts().head(5)
+    # Obtener el conteo de géneros en el año especificado
+    conteo_generos = df_year['genres'].explode().value_counts().to_dict()
     
-    # Convertir la serie a un diccionario con el género como llave y la venta como valor
-    generos_dict = generos_ventas.to_dict(orient='dict')
-    return generos_dict
+    return conteo_generos
 
 # Función para obtener los juegos lanzados en un año
 @app.get('/juegos/')
