@@ -28,8 +28,10 @@ def genero(Año: str):
     
     # Obtener el conteo de géneros en el año especificado
     conteo_generos = df_year['genres'].explode().value_counts().to_dict()
+     # Obtener solo los 5 géneros más vendidos
+    top_5_generos = dict(sorted(conteo_generos.items(), key=lambda item: item[1], reverse=True)[:5])
     
-    return conteo_generos
+    return top_5_generos
 
 # Función para obtener los juegos lanzados en un año
 @app.get('/juegos/')
