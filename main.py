@@ -35,11 +35,14 @@ def genero(Año: str):
 
 # Función para obtener los juegos lanzados en un año
 @app.get('/juegos/')
-def juegos(df, Año: str):
+def juegos(Año: str):
     # Filtrar el DataFrame para el año especificado
     df_year = df[df['release_date'].str.contains(Año, case=False, na=False)]
+    # Verificar si se encontraron juegos para el año especificado
+    if df_year.empty:
+            return f"No se encontraron juegos para el año {Año}."
     # Obtener los juegos lanzados en el año especificado
-    juegos_lanzados = df_year['app_name'].tolist()
+    juegos_lanzados = df_year['app_name'].explode().tolist()
     return {Año: juegos_lanzados}
 # Función para obtener los 5 specs más repetidos en un año
 @app.get('/specs/')
@@ -59,8 +62,6 @@ def earlyacces(Año: str):
     
     games = len(df_year)
     return {"Cantidad de Juegos": games}
-
-# Suponiendo que el DataFrame "df" está definido globalmente o se pasa como un parámetro a la función
 
 # Crear una lista con los valores de sentimientos válidos
 sentiments = ['Overwhelmingly Positive', 'Very Positive', 'Positive', 'Mostly Positive',
