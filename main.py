@@ -25,7 +25,10 @@ df["release_date"].fillna(VALOR_TEMPORAL, inplace=True)
 def genero(Año: str):
     # Filtrar el DataFrame para el año especificado
     df_year = df[df['release_date'].str.contains(Año)]
-    
+    # Verificar si el DataFrame filtrado está vacío
+    if df_year.empty:
+    # Devolver un mensaje de error con el año especificado
+        return {"error": f"No hay datos disponibles para el año {Año}"}
     # Obtener el conteo de géneros en el año especificado
     conteo_generos = df_year['genres'].explode().value_counts().to_dict()
      # Obtener solo los 5 géneros más vendidos
@@ -51,7 +54,10 @@ def juegos(Año: str):
 def specs(Año: str):
     # Filtrar el DataFrame para el año especificado
     df_year = df[df['release_date'].str.contains(Año)]
-    
+    # Verificar si el DataFrame filtrado está vacío
+    if df_year.empty:
+    # Devolver un mensaje de error con el año especificado
+        return {"error": f"No hay datos disponibles para el año {Año}"}
     # Obtener los specs más repetidos en el año especificado
     top_specs = df_year['specs'].explode().value_counts().head(5).index.tolist()
     return {Año: top_specs}
@@ -61,7 +67,11 @@ def earlyacces(Año: str):
     # Filtrar el DataFrame para el año especificado
     mask = (df['release_date'].str.contains(Año, na=False)) & (df["early_access"] == True)
     df_year = df[mask]
-    
+    # Verificar si el DataFrame filtrado está vacío
+    if df_year.empty:
+    # Devolver un mensaje de error con el año especificado
+        return {"error": f"No hay datos disponibles para el año {Año}"}
+
     games = len(df_year)
     return {"Cantidad de Juegos": games}
 
@@ -78,7 +88,10 @@ df = df[df['sentiment'].isin(sentiments)]
 def sentiment(Año: str):
     # Filtrar el DataFrame para el año especificado
     df_year = df[df['release_date'].str.contains(Año)]
-    
+    # Verificar si el DataFrame filtrado está vacío
+    if df_year.empty:
+    # Devolver un mensaje de error con el año especificado
+        return {"error": f"No hay datos disponibles para el año {Año}"}
     # Obtener el análisis de sentimiento y contar la cantidad de registros en cada categoría
     analisis_sentimiento = df_year['sentiment'].value_counts().to_dict()
     
