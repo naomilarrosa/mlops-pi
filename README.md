@@ -38,12 +38,18 @@ Y por último, crear un `modelo de predicción` en el que, con las variables ele
 ## `API`
 
 A continuación estará el enlace a la respectiva api y su documentación: 
-+ https://mlops-pi-q2g7.onrender.com/
++ https://mlops-pi-q2g7.onrender.com
 + https://mlops-pi-q2g7.onrender.com/docs
 
 Además de un video explicativo acerca de esta : 
 
-+ https://youtu.be/XkSlVQyIfww
++ En proceso..
+
+## Deployment
+
+ El despliegue de la API fue realizado mediante render.
+
+ Aquí el tutorial utilizado: https://github.com/HX-FNegrete/render-fastapi-tutorial 
 
 ## `Estructura del repositorio`
 
@@ -61,7 +67,20 @@ Además de un video explicativo acerca de esta :
 
 El proceso de `ETL` esta con código comentado en modelo.ipynb y tambien algunas transformaciones en main.py para el correcto funcionamiento.
 
-
+## Tecnologia usada
+![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white)
+![Jupyter Notebook](https://img.shields.io/badge/jupyter-%23FA0F00.svg?style=for-the-badge&logo=jupyter&logoColor=white)
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+![NumPy](https://img.shields.io/badge/numpy-%23013243.svg?style=for-the-badge&logo=numpy&logoColor=white)
+![Pandas](https://img.shields.io/badge/pandas-%23150458.svg?style=for-the-badge&logo=pandas&logoColor=white)
+![Matplotlib](https://img.shields.io/badge/Matplotlib-%23ffffff.svg?style=for-the-badge&logo=Matplotlib&logoColor=black)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-%23F7931E.svg?style=for-the-badge&logo=scikit-learn&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
+![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)
+![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
+![Markdown](https://img.shields.io/badge/markdown-%23000000.svg?style=for-the-badge&logo=markdown&logoColor=white)
+- Pikle
+- Enum
 ##### Nota :Para acceder a todos los datasets utilizados se puede ingresar al siguiente enlace de drive : 
 
 https://drive.google.com/drive/folders/1HqBG2-sUkz_R3h1dZU5F2uAzpRn7BSpj

@@ -17,7 +17,6 @@ with open("steam_games.json") as f:
 df = pd.DataFrame(rows)
 # Definimos una constante temporal para reemplazar los valores NA o NaN en la columna "release_date"
 VALOR_TEMPORAL = "9999-01-01"
-
 # Rellenar los valores NA o NaN en la columna "release_date" con el valor temporal
 df["release_date"].fillna(VALOR_TEMPORAL, inplace=True)
 # Función para obtener los 5 géneros más vendidos en un año
@@ -35,7 +34,6 @@ def genero(Año: str):
     top_5_generos = dict(sorted(conteo_generos.items(), key=lambda item: item[1], reverse=True)[:5])
     
     return top_5_generos
-
 # Función para obtener los juegos lanzados en un año
 @app.get('/juegos/')
 def juegos(Año: str):
@@ -74,15 +72,12 @@ def earlyacces(Año: str):
 
     games = len(df_year)
     return {"Cantidad de Juegos": games}
-
 # Crear una lista con los valores de sentimientos válidos
 sentiments = ['Overwhelmingly Positive', 'Very Positive', 'Positive', 'Mostly Positive',
  'Mixed', 'Mostly Negative', 'Negative', 'Very Negative',
  'Overwhelmingly Negative']
-
 # Filtrar el DataFrame para quedarse solo con las filas que tengan esos valores en la columna 'sentiment'
 df = df[df['sentiment'].isin(sentiments)]
-
 # Función para obtener el análisis de sentimiento por año
 @app.get('/sentiment/')
 def sentiment(Año: str):
@@ -113,11 +108,9 @@ def metascore(Año: str):
         return top_metascore_juegos
     else:
         return f"No hay valores numéricos en la columna 'metascore' para el año {Año}."
-
 # Cargar el modelo pickle
 with open("model.pkl", "rb") as f:
     model = pickle.load(f)
-
 # Crear el Enum de géneros
 class Genre(Enum):
     Action = "Action"
@@ -133,7 +126,6 @@ class Genre(Enum):
     Sports = "Sports"
     Strategy = "Strategy"
     Video_Production = "Video Production"
-
 # Definir la ruta de predicción
 @app.get("/predicción") 
 def predict(metascore: float = None, earlyaccess: bool = None, Año: str = None, genero: Genre = None):
