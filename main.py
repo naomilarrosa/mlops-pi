@@ -37,8 +37,7 @@ def genero(Año: str):
 @app.get('/juegos/')
 def juegos(Año: str):
     # Filtrar el DataFrame para el año especificado
-    df_year = df[df['release_date'].str.contains(Año)]
-    
+    df_year = df[df.dropna()['release_date'].str.contains(Año)]
     # Obtener los juegos lanzados en el año especificado
     juegos_lanzados = df_year['app_name'].tolist()
     return {Año: juegos_lanzados}
