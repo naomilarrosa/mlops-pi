@@ -41,6 +41,8 @@ def juegos(Año: str):
     # Verificar si se encontraron juegos para el año especificado
     if df_year.empty:
             return f"No se encontraron juegos para el año {Año}."
+    # Convertir los valores de la columna 'app_name' a cadenas
+    df_year['app_name'] = df_year['app_name'].astype(str)
     # Obtener los juegos lanzados en el año especificado
     juegos_lanzados = df_year['app_name'].explode().tolist()
     return {Año: juegos_lanzados}
