@@ -128,7 +128,7 @@ class Genre(Enum):
     Video_Production = "Video Production"
 # Definir la ruta de predicción
 @app.get("/predicción") 
-def prediccion(metascore: float = None, earlyaccess: bool = None, Año: str = None, genero: Genre = None):
+def predict(metascore: float = None, earlyaccess: bool = None, Año: str = None, genero: Genre = None):
     # Validar que se hayan pasado los parámetros necesarios
     if metascore is None or Año is None or genero is None or earlyaccess is None:
         raise HTTPException(status_code=400, detail="Missing parameters")
@@ -143,7 +143,7 @@ def prediccion(metascore: float = None, earlyaccess: bool = None, Año: str = No
     else:
         # Realizar la predicción con el modelo
         try:
-            price = model.prediccion(input_df)[0]
+            price = model.predict(input_df)[0]
         except:
             raise HTTPException(status_code=400, detail="Invalid input")
 
