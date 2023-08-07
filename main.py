@@ -94,9 +94,12 @@ def metascore(Año: str):
     # Filtrar el DataFrame para el año especificado
     df_year = df[df['release_date'].str.contains(Año)]
     
-    # Obtener los top 5 juegos con mayor metascore en el año especificado
-    top_metascore_juegos = df_year.nlargest(5, 'metascore')[['app_name', 'metascore']].to_dict('records')
-    return top_metascore_juegos
+    # Filtrar y obtener los top 5 juegos solo si hay valores numéricos en la columna 'metascore'
+    if df_year['metascore'].notna().any():
+        top_metascore_juegos = df_year.nlargest(5, 'metascore')[['app_name', 'metascore']].to_dict('records')
+        return top_metascore_juegos
+    else:
+        return f"No hay valores numéricos en la columna 'metascore' para el año {Año}."
 
 # Cargar el modelo pickle
 with open("model.pkl", "rb") as f:
